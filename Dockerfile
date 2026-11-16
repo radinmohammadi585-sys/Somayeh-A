@@ -4,8 +4,12 @@ WORKDIR /app
 
 COPY . .
 
-RUN mkdir -p out && javac -d out *.java
+RUN find . -name "*.java" -print > sources.txt \
+    && mkdir -p out \
+    && javac -encoding UTF-8 -d out @sources.txt
 
-EXPOSE 8103
+ENV PORT=10000
 
-CMD ["java", "-cp", "out", "com.infinity.somayeh.ServerMain"]
+EXPOSE 10000
+
+CMD ["sh", "-c", "java -cp out com.infinity.somayeh.ServerMain"]
