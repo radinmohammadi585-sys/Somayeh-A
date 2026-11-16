@@ -73,13 +73,16 @@ public final class RouteRegistry {
       String keyName,
       String prompt
   ) throws IOException {
+String accountId =
+    Config.requireKey("CLOUDFLARE_ACCOUNT_ID");
 
-    String accountId =
-        Config.requireKey("CLOUDFLARE_ACCOUNT_ID");
+String token =
+    Config.requireKey("Video_Somayeh-AI");
 
-    String token =
-        Config.requireKey("CLOUDFLARE_API_TOKEN");
-
+if (token.isEmpty()) {
+    token = Config.requireKey("VIDEO_SOMAYEH_AI");
+}
+    
     if (token.isEmpty()) {
       token = Config.requireKey(keyName);
     }
