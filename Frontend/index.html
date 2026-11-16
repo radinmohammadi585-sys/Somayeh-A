@@ -77,7 +77,7 @@ button.go{margin-top:10px;border:0;background:var(--accent);color:#fff;border-ra
   <button type="button" data-p="music">🎵</button>
 </div>
 <script>
-const API=localStorage.getItem('BACKEND_URL')||'';
+‌const API=window.location.origin;
 const titles={video:'ویدیو',image:'تصویر',music:'موسیقی'};
 function go(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
