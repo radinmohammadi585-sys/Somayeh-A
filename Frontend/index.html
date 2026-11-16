@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Somayeh AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#f3f4f6;--fg:#111;--muted:#6b7280;--card:#fff;--line:#e5e7eb;--accent:#111}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;font-family:"Vazirmatn",system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+.nav{width:220px;background:#fff;border-inline-end:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:6px}
+.brand{font-weight:800;font-size:18px;padding:8px 10px 14px}
+.nav button{border:0;background:transparent;text-align:start;padding:12px 14px;border-radius:12px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.nav button.on,.nav button:hover{background:#111;color:#fff}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{padding:14px 18px;border-bottom:1px solid var(--line);background:#fff;display:flex;justify-content:space-between;align-items:center}
+.page{display:none;padding:22px;max-width:880px}
+.page.on{display:block;animation:f .3s ease}
+@keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px;font-family:inherit;font-size:14px;min-height:110px}
+button.go{margin-top:10px;border:0;background:var(--accent);color:#fff;border-radius:12px;padding:12px 18px;font-weight:700;font-family:inherit;cursor:pointer}
+.result{margin-top:14px;padding:14px;border-radius:12px;background:#f9fafb;border:1px dashed var(--line);white-space:pre-wrap;min-height:70px}
+.thinking{display:none;align-items:center;justify-content:center;margin:12px auto;width:110px;height:42px;border-radius:999px;border:1px solid var(--line)}
+.thinking.on{display:flex}
+.thinking .d{width:9px;height:9px;margin:0 5px;border-radius:50%;animation:td 1.1s infinite}
+.thinking .d:nth-child(2){animation-delay:.15s}.thinking .d:nth-child(3){animation-delay:.3s}
+@keyframes td{0%{background:#3b82f6}33%{background:#22c55e}66%{background:#ef4444}100%{background:#3b82f6}}
+.bottom{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);justify-content:space-around;padding:10px}
+.muted{color:var(--muted);font-size:13px}
+@media(max-width:800px){.nav{display:none}.bottom{display:flex}.page{padding:16px 14px 80px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="brand">Somayeh AI</div>
+  <button type="button" class="on" data-p="video">🎬 ویدیو</button>
+  <button type="button" data-p="image">🖼 تصویر</button>
+  <button type="button" data-p="music">🎵 موسیقی</button>
+</nav>
+<div class="main">
+  <div class="top"><b id="title">ویدیو</b><span class="muted">Clean Studio</span></div>
+  <section class="page on" id="page-video">
+    <div class="panel">
+      <h2 style="margin-top:0">تولید ویدیو</h2>
+      <p class="muted">کلید سرور: Video_Somayeh-AI</p>
+      <textarea id="vPrompt" placeholder="توضیح ویدیو…"></textarea>
+      <button type="button" class="go" data-api="video">تولید ویدیو</button>
+      <div class="thinking" id="tv"><span class="d"></span><span class="d"></span><span class="d"></span></div>
+      <div class="result" id="rv">نتیجه اینجا می‌آید</div>
+    </div>
+  </section>
+  <section class="page" id="page-image">
+    <div class="panel">
+      <h2 style="margin-top:0">تولید تصویر</h2>
+      <p class="muted">کلید سرور: Image_Somayeh-AI</p>
+      <textarea id="iPrompt" placeholder="توضیح تصویر…"></textarea>
+      <button type="button" class="go" data-api="image">تولید تصویر</button>
+      <div class="thinking" id="ti"><span class="d"></span><span class="d"></span><span class="d"></span></div>
+      <div class="result" id="ri">نتیجه اینجا می‌آید</div>
+    </div>
+  </section>
+  <section class="page" id="page-music">
+    <div class="panel">
+      <h2 style="margin-top:0">تولید موسیقی</h2>
+      <p class="muted">کلید سرور: Music_Somayeh-AI</p>
+      <textarea id="mPrompt" placeholder="سبک و حال موسیقی…"></textarea>
+      <button type="button" class="go" data-api="music">تولید موسیقی</button>
+      <div class="thinking" id="tm"><span class="d"></span><span class="d"></span><span class="d"></span></div>
+      <div class="result" id="rm">نتیجه اینجا می‌آید</div>
+    </div>
+  </section>
+</div>
+<div class="bottom">
+  <button type="button" data-p="video">🎬</button>
+  <button type="button" data-p="image">🖼</button>
+  <button type="button" data-p="music">🎵</button>
+</div>
+<script>
+const API=localStorage.getItem('BACKEND_URL')||'';
+const titles={video:'ویدیو',image:'تصویر',music:'موسیقی'};
+function go(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.getElementById('title').textContent=titles[p]||p;
+  document.querySelectorAll('[data-p]').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+}
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>go(b.dataset.p));
+const map={video:['vPrompt','tv','rv'],image:['iPrompt','ti','ri'],music:['mPrompt','tm','rm']};
+document.querySelectorAll('button.go').forEach(btn=>btn.onclick=async()=>{
+  const kind=btn.dataset.api; const [pid,tid,rid]=map[kind];
+  const prompt=document.getElementById(pid).value.trim(); if(!prompt) return;
+  const th=document.getElementById(tid), res=document.getElementById(rid);
+  th.classList.add('on'); res.textContent='در حال ارسال…';
+  try{
+    const r=await fetch(API+'/api/'+kind,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    const j=await r.json(); res.textContent=JSON.stringify(j,null,2);
+  }catch(e){res.textContent='خطای اتصال';}
+  finally{th.classList.remove('on')}
+});
+</script>
+</body></html>
